@@ -1,25 +1,39 @@
 package main
-import(
+
+import (
 	"fmt"
 	"sync"
 )
+
 var wg sync.WaitGroup
 
-func printer(c chan int){
-	for i := range c{
-		fmt.Printf("Recieved %d \n", i)
+func producer(c chan int, c1 chan bool) {
+MYLOOP:
+	for {
+		select {
+		case i := <-c:
+			fmt.Printf("Recieved %d \n", i); break
+		case <-c1:
+			break MYLOOP
+		}
 	}
 	wg.Done()
 }
-func main(){
-	c := make(chan int)
-	go printer(c)
 
-	for i:=1;i < 10; i++ {
+func consumer(c chan int, c1 chan bool) {
+	for i := 1; i < 100; i++ {
 		c <- i
 	}
-
-	close(c)
-
+	c1 <- true
+	wg.Done()
+}
+func main() {
+	c := make(chan int)
+	c1 := make(chan bool)
+	wg.Add(1)
+	go producer(c, c1)
+	wg.Add(1)
+	go consumer(c, c1)
 	wg.Wait()
+	close(c)
 }
