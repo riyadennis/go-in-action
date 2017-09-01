@@ -2,23 +2,33 @@ package search
 
 import (
 	"os"
-	"log"
 	"encoding/json"
 )
 
 type Feed struct {
-	Site string		`json:"site"`
-	Link string		`json:"link"`
-	Type string		`json:"type"`
+	Name string        `json:"site"`
+	URI  string        `json:"link"`
+	Type string        `json:"type"`
 }
 
-func RetrieveFeeds() (error,[]*Feed){
-	file, err := os.Open("/Users/riya.dennis/work/go-in-action/chapter2/data/data.json")
+const dataFile = "/chapter2/data/data.json"
+
+//function takes not values but returns
+// two values : a slice of pointers to feed and error
+func RetrieveFeeds() ([]*Feed, error) {
+	pwd, err := os.Getwd()
+	file, err := os.Open(pwd + dataFile)
 	if err != nil {
-		log.Fatal(err.Error())
+		return nil, err
 	}
+
+	//schedule the file to be closed once the function returns
+	defer file.Close()
+
+	//create a slice of pointers
+	// into which we can decode the contents of the file
 	var feeds []*Feed
 	err = json.NewDecoder(file).Decode(&feeds)
 
-	return err, feeds
+	return feeds, err
 }
