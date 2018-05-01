@@ -4,14 +4,24 @@ import (
 	"time"
 	"fmt"
 	"log"
+	"net/http"
 )
 
 func main() {
 	log.Println("Starting the application\n")
 	start := time.Now()
-	fmt.Printf("time %d\n", time.Hour+time.Since(start))
 	nums := [5]int{1,2,3,4,5}
 	fmt.Printf("Sum is %d \n",sum(nums))
+	fmt.Printf("time to find sum  %d\n",time.Since(start))
+
+	startGoogle := time.Now()
+	http.Get("https://www.google.co.uk/")
+	fmt.Printf("time to fetch google %d\n",time.Since(startGoogle))
+
+
+	startSainsburys := time.Now()
+	http.Get("http://www.sainsburys.co.uk/")
+	fmt.Printf("time to fetch sainsburys %d\n",time.Since(startSainsburys))
 }
 
 func sum(i [5]int)(int){

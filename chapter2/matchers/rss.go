@@ -2,7 +2,7 @@ package matchers
 
 import (
 	"encoding/xml"
-	"./search"
+	"github.com/go-in-action/chapter2/search"
 )
 
 type (
